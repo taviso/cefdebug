@@ -1,0 +1,10 @@
+CFLAGS=-ggdb3 -O0
+CPPFLAGS=`pkg-config --cflags readline,libwebsockets`
+LDLIBS=`pkg-config --libs readline,libwebsockets`
+
+.PHONY: clean
+
+cefdebug: evaluate.o wsurls.o ports.o cefdebug.o
+
+clean:
+	rm -f cefdebug *.o

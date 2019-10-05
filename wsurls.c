@@ -21,9 +21,9 @@ static const struct lws_protocols protocols[] = {
         { 0 }
 };
 
-static DWORD ActiveConnect;
+static uint32_t ActiveConnect;
 
-static char callback_json(struct lejp_ctx *ctx, char reason)
+static signed char callback_json(struct lejp_ctx *ctx, char reason)
 {
     char ***wsurls = ctx->user;
     uint32_t urlcount;

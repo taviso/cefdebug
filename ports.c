@@ -68,7 +68,7 @@ int32_t get_listening_ports(const char *localaddr, uint16_t **portlist)
     line      = NULL;
     len       = 0;
     result    = 0;
-    *portlist = NULL;
+    *portlist = calloc(sizeof(uint16_t), 1);
     tcptable  = fopen("/proc/net/tcp", "r");
 
     // Skip the column headers.
@@ -77,14 +77,14 @@ int32_t get_listening_ports(const char *localaddr, uint16_t **portlist)
     }
 
     while (getline(&line, &len, tcptable) != -1) {
-        uint32_t localaddr;
-        uint16_t localport;
+        uint32_t addr;
+        uint16_t port;
         uint32_t state;
         int match;
 
         match = sscanf(line, "%*hhx: %x:%hx %*x:%*hx %02x",
-                             &localaddr,
-                             &localport,
+                             &addr,
+                             &port,
                              &state);
 
         if (match != 3)
@@ -93,12 +93,13 @@ int32_t get_listening_ports(const char *localaddr, uint16_t **portlist)
         if (state != TCP_LISTEN)
             continue;
 
-        if (localaddr != inet_addr(localaddr))
+        if (addr != inet_addr(localaddr))
             continue;
 
-        *portlist = realloc(*portlist, (result + 1) * sizeof uint16_t);
-        (*portlist)[result] = localport;
-        (*portlist)[result++] = 0;
+        *portlist = realloc(*portlist, (result + 2) * sizeof(uint16_t));
+        (*portlist)[result+0] = port;
+        (*portlist)[result+1] = 0;
+        result++;
     }
 
 error:

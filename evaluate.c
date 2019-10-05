@@ -2,9 +2,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <ctype.h>
 #if defined(_WIN32)
-#include <winsock2.h>
-#include <windows.h>
+# include <winsock2.h>
+# include <windows.h>
 #endif
 
 #include "libwebsockets.h"
@@ -46,7 +47,7 @@ struct dbg_context_handle {
 };
 
 
-static char callback_json_ws(struct lejp_ctx *ctx, char reason)
+static signed char callback_json_ws(struct lejp_ctx *ctx, char reason)
 {
     struct dbg_context_handle *handle = ctx->user;
 
@@ -91,7 +92,7 @@ static char *url_escape_string(const char *str)
 }
 
 
-static DWORD ActiveConnect;
+static uint32_t ActiveConnect;
 
 static int callback_default_ws(struct lws *wsi,
                                enum lws_callback_reasons reason,
@@ -184,6 +185,7 @@ void *dbg_open_handle(const char *wsurl)
                                    kRuntimeEnable,
                                    handle->msgid);
 
+    lws_callback_on_writable(handle->ctx);
     lws_service(wscontext, 0);
 
     return handle;
@@ -213,8 +215,9 @@ void dbg_close_handle(void *handle)
 
     dbg->size = -1;
 
-    while (lws_service(lws_get_context(dbg->ctx), 0) >= 0 && ActiveConnect)
-        ;
+    do {
+        lws_callback_on_writable(dbg->ctx);
+    } while (lws_service(lws_get_context(dbg->ctx), 0) >= 0 && ActiveConnect);
 
     lws_context_destroy(lws_get_context(dbg->ctx));
 
@@ -248,8 +251,10 @@ char *dbg_eval_expression(void *handle, const char *expression)
     // If there is a message still waiting to be sent, or 
     // a response hasn't been received, just keep calling
     // lws_service().
-    while (dbg->size || dbg->pending)
+    while (dbg->size || dbg->pending) {
+        lws_callback_on_writable(dbg->ctx);
         lws_service(lws_get_context(dbg->ctx), 0);
+    }
 
     lwsl_info("ready to send message\n");
 
@@ -266,8 +271,10 @@ char *dbg_eval_expression(void *handle, const char *expression)
     // If there is a message still waiting to be sent, or 
     // a response hasn't been received, just keep calling
     // lws_service().
-    while (dbg->size || dbg->pending)
+    while (dbg->size || dbg->pending) {
+        lws_callback_on_writable(dbg->ctx);
         lws_service(lws_get_context(dbg->ctx), 0);
+    }
 
     result = dbg->description
         ? strdup(dbg->description)

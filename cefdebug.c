@@ -18,11 +18,12 @@ void print_usage(const char *name)
     lwsl_err("usage: %s [--code=CODE] [--url=URL]\n", name);
 }
 
-int main(int argc, char **argv)
+int main(int argc, const char **argv)
 {
     uint16_t *portlist;
     char **wsurls;
     char *result;
+    char *line;
     void *handle;
     const char *url, *code;
 
@@ -60,16 +61,16 @@ int main(int argc, char **argv)
     if (url && !code) {
         handle = dbg_open_handle(url);
 
-        while ((code = readline(">>> "))) {
+        while ((line = readline(">>> "))) {
 
-            if (strcmp(code, "quit") == 0)
+            if (strcmp(line, "quit") == 0)
                 break;
 
-            result = dbg_eval_expression(handle, code);
+            result = dbg_eval_expression(handle, line);
 
             lwsl_user("<<< %s\n", result);
 
-            rl_free(code);
+            rl_free(line);
         }
 
         dbg_close_handle(handle);
