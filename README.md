@@ -7,12 +7,12 @@ You're probably thinking, "who would enable the debugger in shipping products?".
 Well, it turns out just about everyone shipping electron or CEF has made this
 mistake at least once.
 
-In very old versions, you could pop a shell remotely just by making a victim
+In some configurations, you can pop a shell remotely just by making a victim
 click a link.
 
 Example: https://bugs.chromium.org/p/project-zero/issues/detail?id=773
 
-In slightly older versions, you could pop a shell remotely using DNS rebinding.
+In older versions, you could pop a shell remotely using DNS rebinding.
 
 Example: https://bugs.chromium.org/p/project-zero/issues/detail?id=1742
 
@@ -83,17 +83,21 @@ Here are a list of code snippets I've seen that allow code exec in different ele
 ### Notes
 Here are things to test if you find a debugger.
 
-* Does it prevent DNS rebinding?
+* Does it prevent [DNS rebinding](https://en.wikipedia.org/wiki/DNS_rebinding)?
 
 `$ curl -H 'Host: example.com' -si 'http://127.0.0.1:9234/json/list'`
 
 🚨 If that works, this is **remotely** exploitable. 🚨
 
+Newer versions of chromium require that the Host header match `localhost` or an IP address to prevent this. If this works, the application you're looking at is based on an older version of chromium, and leaving the debugger enabled can be **remotely** exploited. You have found a critical vulnerability.
+
 * Is the `new` command functioning?
 
 `$ curl -si 'http://127.0.0.1:9234/json/new?javascript:alert(1)'`
 
-🚨 If that works, this is **easily** **remotely** exploitable. 🚨
+🔥🚨 If that works, this is **easily** **remotely** exploitable. 🚨🔥
+
+This command requires no CSRF or authentication. Just `<img src=http://127.0.0.1:XXX/json/new?javascript:...>` in a website is enough to exploit it. This is a very critical vulnerability.
 
 # Building
 
