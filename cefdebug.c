@@ -7,6 +7,7 @@
 # include "wineditline/src/editline/readline.h"
 #elif defined(__linux__)
 # include <readline.h>
+# include <readline/history.h>
 #endif
 
 #include "libwebsockets.h"
