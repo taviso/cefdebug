@@ -75,8 +75,7 @@ certainly game over, as you can use any api the application itself can use.
 > If you don't want to build it yourself, check out the [releases](https://github.com/taviso/ctftool/releases) tab
 
 I used [GNU make](http://gnuwin32.sourceforge.net/packages/make.htm) and Visual
-Studio 2019 to develop `cefdebug`. Only 32-bit builds are supported, as this
-allows the tool to run on x86 and x64 Windows.
+Studio 2019 to develop `cefdebug`. 
 
 If all the dependencies are installed, just typing `make` in a developer command
 prompt should be enough.
