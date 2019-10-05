@@ -1,0 +1,6 @@
+[submodule "libwebsockets"]
+	path = libwebsockets
+	url = https://libwebsockets.org/repo/libwebsockets
+[submodule "wineditline"]
+	path = wineditline
+	url = https://github.com/winlibs/wineditline.git
