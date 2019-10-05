@@ -97,7 +97,7 @@ Newer versions of chromium require that the Host header match `localhost` or an 
 
 🔥🚨 If that works, this is **easily** **remotely** exploitable. 🚨🔥
 
-This command requires no CSRF or authentication. Just `<img src=http://127.0.0.1:XXX/json/new?javascript:...>` in a website is enough to exploit it. This is a very critical vulnerability.
+This command requires authentication, and has no CSRF protection. Just `<img src=http://127.0.0.1:XXX/json/new?javascript:...>` in a website is enough to exploit it. This is a very critical vulnerability.
 
 # Building
 
