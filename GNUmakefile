@@ -59,7 +59,7 @@ release: cefdebug.zip cefdebug-src.zip
 
 cefdebug.obj: | websockets.lib
 
-cefdebug.exe: evaluate.obj wsurls.obj ports.obj cefdebug.obj | websockets.lib edit.lib
+cefdebug.exe: version.res evaluate.obj wsurls.obj ports.obj cefdebug.obj | websockets.lib edit.lib
 
 websockets.lib:
 	-$(CMAKE) -S libwebsockets -B build-$@
