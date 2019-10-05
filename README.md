@@ -37,7 +37,7 @@ $ ./cefdebug.exe
 Now you can send commands to that `ws://` URL.
 
 ```
-$ ./cefdebug.exe --url=ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a --code="process.version"
+$ ./cefdebug.exe --url ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a --code "process.version"
 [2019/10/04 16:35:06:2645] U: >>> process.version
 [2019/10/04 16:35:06:2685] U: <<< v10.11.0
 ```
@@ -45,7 +45,7 @@ $ ./cefdebug.exe --url=ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a 
 Alternatively, you can start a simple interactive shell.
 
 ```
-$ ./cefdebug.exe --url=ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a
+$ ./cefdebug.exe --url ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a
 >>> ['hello', 'world'].join(' ')
 [2019/10/04 16:36:31:0964] U: <<< hello world
 >>> a = 1024
@@ -60,7 +60,7 @@ $ ./cefdebug.exe --url=ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a
 In general, if node is available, something like this might work:
 
 ```
-$ ./cefdebug.exe --url=ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a --code="process.mainModule.require('child_process').exec('calc').pid"
+$ ./cefdebug.exe --url ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a --code "process.mainModule.require('child_process').exec('calc').pid"
 [2019/10/04 16:39:18:6464] U: >>> process.mainModule.require('child_process').exec('calc').pid
 [2019/10/04 16:39:18:6523] U: <<< 18560
 ```
@@ -92,7 +92,13 @@ git submodule update --init --recursive
 ```
 ## Linux
 
-The main depdencies are libwebsockets and libreadline, then just type make.
+The main depdencies are libwebsockets and libreadline.
+
+On Fedora, try:
+
+`yum install readline-devel libwebsockets-devel openssl-devel`
+
+If the dependencies are intalled, try `make -f GNUmakefile.linux`
 
 ## Embedding
 
