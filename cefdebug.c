@@ -70,6 +70,8 @@ int main(int argc, const char **argv)
 
             lwsl_user("<<< %s\n", result);
 
+            add_history(line);
+
             rl_free(line);
         }
 
