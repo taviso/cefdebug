@@ -87,7 +87,7 @@ Here are things to test if you find a debugger.
 
 `$ curl -H 'Host: example.com' -si 'http://127.0.0.1:9234/json/list'`
 
-🚨 If that works (i.e. status 200), this is **remotely** exploitable. 🚨
+🚨 If that works (i.e. json response), this is **remotely** exploitable. 🚨
 
 Newer versions of chromium require that the Host header match `localhost` or an IP address to prevent this. If this works, the application you're looking at is based on an older version of chromium, and leaving the debugger enabled can be **remotely** exploited. You have found a critical vulnerability.
 
