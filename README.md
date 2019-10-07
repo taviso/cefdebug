@@ -107,9 +107,9 @@ https://magpcss.org/ceforum/apidocs3/projects/(default)/_cef_settings_t.html#rem
 
 In electron, it's possible you're doing something like:
 
-`app.commandLine.appendSwitch('remote-debugging-port'...)`
+`commandLine.appendSwitch('remote-debugging-port'...)`
 
-Or some similar debug switch.
+Or perhaps using `--inspect` on child processes.
 
 # Building
 
