@@ -55,22 +55,10 @@ $ ./cefdebug.exe --url ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a
 >>> quit
 ```
 
-## h4x0r1ng
-
-In general, if node is available, something like this might work:
-
-```
-$ ./cefdebug.exe --url ws://127.0.0.1:3585/5a9e3209-3983-41fa-b0ab-e739afc8628a --code "process.mainModule.require('child_process').exec('calc').pid"
-[2019/10/04 16:39:18:6464] U: >>> process.mainModule.require('child_process').exec('calc').pid
-[2019/10/04 16:39:18:6523] U: <<< 18560
-```
-
-Otherwise, you will have to query what apis and objects are exposed. It is almost
-certainly game over, as you can use any api the application itself can use.
-
 ### Known Examples
 
-Here are a list of code snippets I've seen that allow code exec in different electron applications.
+Here are a list of code snippets I've seen that allow code exec in different electron
+applications.
 
 `process.mainModule.require('child_process').exec('calc')`
 
@@ -89,7 +77,11 @@ Here are things to test if you find a debugger.
 
 🚨 If that works (i.e. json response), this is **remotely** exploitable. 🚨
 
-Newer versions of chromium require that the Host header match `localhost` or an IP address to prevent this. If this works, the application you're looking at is based on an older version of chromium, and leaving the debugger enabled can be **remotely** exploited. You have found a critical vulnerability.
+Newer versions of chromium require that the Host header match `localhost` or an
+IP address to prevent this. If this works, the application you're looking at is
+based on an older version of chromium, and leaving the debugger enabled can be
+**remotely** exploited. You have found a critical vulnerability and should
+report it urgently.
 
 * Is the `new` command functioning?
 
@@ -97,12 +89,18 @@ Newer versions of chromium require that the Host header match `localhost` or an 
 
 🔥🚨 If that works (i.e. a json response), this is **easily** **remotely** exploitable. 🚨🔥
 
-This command requires no authentication, and has no CSRF protection. Just `<img src=http://127.0.0.1:XXX/json/new?javascript:...>` in a website is enough to exploit it. This is a very critical vulnerability.
+This command requires no authentication, and has no CSRF protection. Just
+`<img src=http://127.0.0.1:port/json/new?javascript:...>` in a website is
+enough to exploit it. Even if the port is randomized, it can be brute forced
+easily.
+
+This is a very critical vulnerability, and should be reported urgently.
 
 # Solution
 
-If you maintain a CEF project and you've noticed you're vulnerable to this attack, you probably
-need to change this setting in your `cef_settings_t` for production builds:
+If you maintain a CEF project and you've noticed you're vulnerable to this
+attack, you probably need to change this setting in your `cef_settings_t`
+for production builds:
 
 https://magpcss.org/ceforum/apidocs3/projects/(default)/_cef_settings_t.html#remote_debugging_port
 
