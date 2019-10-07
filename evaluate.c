@@ -206,28 +206,36 @@ error:
 void dbg_close_handle(void *handle)
 {
     struct dbg_context_handle *dbg = handle;
+    struct lws_context *ctx;
 
     lwsl_info("dbg_close_handle(%p);\n", dbg);
 
     if (handle == NULL)
         goto error;
 
+    if (dbg->ctx == NULL)
+        goto error;
+
+    if ((ctx = lws_get_context(dbg->ctx)) == NULL)
+        goto error;
+
     // If there is a message still waiting to be sent, or 
     // a response hasn't been received, just keep calling
     // lws_service().
     while (dbg->size || dbg->pending)
-        lws_service(lws_get_context(dbg->ctx), 0);
+        lws_service(ctx, 0);
 
+    // Indicate we want to terminate the connection.
     dbg->size = -1;
 
     do {
         lws_callback_on_writable(dbg->ctx);
-    } while (lws_service(lws_get_context(dbg->ctx), 0) >= 0 && ActiveConnect);
+    } while (lws_service(ctx, 0) >= 0 && ActiveConnect);
 
-    lws_context_destroy(lws_get_context(dbg->ctx));
+    // Cleanup.
+    lws_context_destroy(ctx);
 
 error:
-
     return;
 }
 
@@ -281,9 +289,13 @@ char *dbg_eval_expression(void *handle, const char *expression)
         lws_service(lws_get_context(dbg->ctx), 0);
     }
 
-    result = dbg->description
-        ? strdup(dbg->description)
-        : strdup(dbg->result);
+    if (dbg->description) {
+        result = strdup(dbg->description);
+    } else if (dbg->result) {
+        result = strdup(dbg->result);
+    } else {
+        result = NULL;
+    }
 
     free(dbg->result);
     free(dbg->description);

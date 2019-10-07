@@ -49,13 +49,22 @@ int main(int argc, const char **argv)
 
         lwsl_user("There are %d tcp sockets in state listen.\n", count);
 
+        if (count <= 0)
+            return 0;
+
         count = get_websocket_urls("127.0.0.1", portlist, &wsurls);
 
         lwsl_user("There were %d servers that appear to be CEF debuggers.\n", count);
 
-        for (; wsurls && *wsurls; wsurls++) {
-            lwsl_user("%s\n", *wsurls);
+        if (count >= 0) {
+            for (int i = 0; i < count; i++) {
+                lwsl_user("%s\n", wsurls[i]);
+                free(wsurls[i]);
+            }
         }
+
+        free(wsurls);
+        free(portlist);
     }
 
     // If URL, but no code, then enter interactive mode.

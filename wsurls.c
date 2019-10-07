@@ -41,9 +41,7 @@ static signed char callback_json(struct lejp_ctx *ctx, char reason)
 
     lwsl_info("key matches, value is %s\n", ctx->buf);
 
-    // This is a websocket url. AFAIK, this can only ever be called from one
-    // thread, so no mutex needed.
-    for (urlcount = 0; wsurls[urlcount]; urlcount++)
+    for (urlcount = 0; (*wsurls)[urlcount]; urlcount++)
         ;
 
     // Append to the list of known URLs.
@@ -99,7 +97,7 @@ static int callback_http(struct lws *wsi,
             // This is a quirk of libwebsocket, you must guarantee buffers you
             // provide have LWS_PRE bytes behind them (?!?).
             // https://libwebsockets.org/lws-api-doc-master/html/group__sending-data.html#gafd5fdd285a0e25ba7e3e1051deec1001
-            char buffer[LWS_PRE + 1024];
+            char buffer[LWS_PRE + 4096];
             char *px = &buffer[LWS_PRE];
             int lenx = sizeof(buffer) - LWS_PRE;
 
@@ -133,7 +131,7 @@ int32_t get_websocket_urls(char *hostname, uint16_t *portlist, char **wsurls[])
 
     result  = -1;
     context = lws_create_context(&info);
-    *wsurls = NULL;
+    *wsurls = calloc(1, sizeof (char *));
 
     for (; *portlist; portlist++) {
         struct lws *ctx;
@@ -168,7 +166,7 @@ int32_t get_websocket_urls(char *hostname, uint16_t *portlist, char **wsurls[])
     while (lws_service(context, 0) >= 0 && ActiveConnect)
         lwsl_info("waiting for %u jobs to complete\n", ActiveConnect);
 
-    for (result = 0; *wsurls && (*wsurls)[result]; result++) {
+    for (result = 0; (*wsurls)[result]; result++) {
         lwsl_info("discovered ws url %s\n", (*wsurls)[result]);
     }
 
