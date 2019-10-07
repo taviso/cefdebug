@@ -101,15 +101,18 @@ This command requires no authentication, and has no CSRF protection. Just `<img 
 
 # Solution
 
-If you maintain a CEF project and you've noticed you're vulnerable to this attack, you probably need to change this setting in your `cef_settings_t` for production builds:
+If you maintain a CEF project and you've noticed you're vulnerable to this attack, you probably
+need to change this setting in your `cef_settings_t` for production builds:
 
 https://magpcss.org/ceforum/apidocs3/projects/(default)/_cef_settings_t.html#remote_debugging_port
 
 In electron, it's possible you're doing something like:
 
-`commandLine.appendSwitch('remote-debugging-port'...)`
+`app.commandLine.appendSwitch('remote-debugging-port'...)`
 
-Or perhaps using `--inspect` on child processes.
+If you're using node, perhaps you're using `--inspect` on child processes.
+
+https://nodejs.org/de/docs/guides/debugging-getting-started/#security-implications
 
 # Building
 
