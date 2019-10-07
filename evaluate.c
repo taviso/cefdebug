@@ -12,11 +12,13 @@
 
 #include "cefscan.h"
 
+// The command to enable evaluation.
 static const char kRuntimeEnable[] = "{"
     "\"id\": %d,"
     "\"method\": \"Runtime.enable\""
 "}";
 
+// The command to perform evluation.
 static const char kRuntimeEvaluate[] = "{"
     "\"id\": %d,"
     "\"method\": \"Runtime.evaluate\","
@@ -35,16 +37,19 @@ static const struct lws_protocols wsprotocols[] = {
         { 0 }
 };
 
+#pragma pack(push)
+#pragma pack(1)
 struct dbg_context_handle {
-    int msgid;
-    int size;
-    int pending;
-    struct lws *ctx;
-    char pre_buf[LWS_PRE];
-    char message[1024];
-    char *result;
-    char *description;
+    int     msgid;
+    int     size;
+    int     pending;
+    struct  lws *ctx;
+    char    pre_buf[LWS_PRE];
+    char    message[1024];
+    char    *result;
+    char    *description;
 };
+#pragma pack(pop)
 
 
 static signed char callback_json_ws(struct lejp_ctx *ctx, char reason)

@@ -5,11 +5,13 @@
 #endif
 
 #include "libwebsockets.h"
-
 #include "cefscan.h"
 
+// The JSON path for the websocket URL
+// https://chromedevtools.github.io/devtools-protocol/
 static const char kDebuggerPath[] = "pages[].webSocketDebuggerUrl";
 
+// libwebsockets callback for HTTP events.
 static int callback_http(struct lws *wsi,
                          enum lws_callback_reasons reason,
                          void *user,
@@ -28,6 +30,7 @@ static signed char callback_json(struct lejp_ctx *ctx, char reason)
     char ***wsurls = ctx->user;
     uint32_t urlcount;
 
+    // The only event I'm interested in is when a string value has been seen.
     if (reason != LEJPCB_VAL_STR_END)
         return 0;
 
@@ -38,11 +41,12 @@ static signed char callback_json(struct lejp_ctx *ctx, char reason)
 
     lwsl_info("key matches, value is %s\n", ctx->buf);
 
-    // This is a websocket url.
-    // AFAIK, this can only ever be called from one thread, so no mutex needed.
+    // This is a websocket url. AFAIK, this can only ever be called from one
+    // thread, so no mutex needed.
     for (urlcount = 0; wsurls[urlcount]; urlcount++)
         ;
 
+    // Append to the list of known URLs.
     *wsurls = realloc(*wsurls, (urlcount + 2) * sizeof(char *));
     (*wsurls)[urlcount++] = strdup(ctx->buf);
     (*wsurls)[urlcount++] = NULL;
@@ -80,7 +84,7 @@ static int callback_http(struct lws *wsi,
                 return -1;
             }
 
-            // Add JSON Preamble.
+            // Add JSON Preamble, or the libwebsocket parser will reject it.
             lejp_parse(user, "{ \"pages\": ", 11);
             break;
 
@@ -94,6 +98,7 @@ static int callback_http(struct lws *wsi,
         case LWS_CALLBACK_RECEIVE_CLIENT_HTTP: {
             // This is a quirk of libwebsocket, you must guarantee buffers you
             // provide have LWS_PRE bytes behind them (?!?).
+            // https://libwebsockets.org/lws-api-doc-master/html/group__sending-data.html#gafd5fdd285a0e25ba7e3e1051deec1001
             char buffer[LWS_PRE + 1024];
             char *px = &buffer[LWS_PRE];
             int lenx = sizeof(buffer) - LWS_PRE;
