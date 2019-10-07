@@ -99,6 +99,18 @@ Newer versions of chromium require that the Host header match `localhost` or an 
 
 This command requires no authentication, and has no CSRF protection. Just `<img src=http://127.0.0.1:XXX/json/new?javascript:...>` in a website is enough to exploit it. This is a very critical vulnerability.
 
+# Solution
+
+If you maintain a CEF project and you've noticed you're vulnerable to this attack, you probably need to change this setting in your `cef_settings_t` for production builds:
+
+https://magpcss.org/ceforum/apidocs3/projects/(default)/_cef_settings_t.html#remote_debugging_port
+
+In electron, it's possible you're doing something like:
+
+`app.commandLine.appendSwitch('remote-debugging-port'...)`
+
+Or some similar debug switch.
+
 # Building
 
 ## Windows 
