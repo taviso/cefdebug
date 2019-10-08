@@ -15,6 +15,7 @@ Example: https://bugs.chromium.org/p/project-zero/issues/detail?id=773
 In older versions, you could pop a shell remotely using DNS rebinding.
 
 Example: https://bugs.chromium.org/p/project-zero/issues/detail?id=1742
+Example: https://bugs.chromium.org/p/project-zero/issues/detail?id=1946
 
 In current versions, you can compromise other local users or escape sandboxes.
 
