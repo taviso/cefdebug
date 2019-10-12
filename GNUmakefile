@@ -62,14 +62,14 @@ cefdebug.obj: | websockets.lib
 cefdebug.exe: version.res evaluate.obj wsurls.obj ports.obj cefdebug.obj | websockets.lib edit.lib
 
 websockets.lib:
-	-$(CMAKE) -S libwebsockets -B build-$@
-	$(CMAKE) -ULWS_WITH_SSL -DLWS_WITH_SSL=OFF -S libwebsockets -B build-$@
+	-$(CMAKE) -A Win32 -S libwebsockets -B build-$@
+	$(CMAKE) -A Win32 -ULWS_WITH_SSL -DLWS_WITH_SSL=OFF -S libwebsockets -B build-$@
 	$(MSBUILD) $(MFLAGS) build-$@/libwebsockets.sln
 	cmd.exe /c copy build-$@\\lib\\Release\\websockets_static.lib $@
 	cmd.exe /c copy build-$@\\include\\lws_config.h lws_config.h
 
 edit.lib:
-	$(CMAKE) -S wineditline -B build-$@
+	$(CMAKE) -A Win32 -S wineditline -B build-$@
 	$(MSBUILD) $(MFLAGS) build-$@/WinEditLine.sln
 	cmd.exe /c copy build-$@\\src\\Release\\edit_a.lib $@
 
