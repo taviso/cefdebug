@@ -118,7 +118,7 @@ https://nodejs.org/de/docs/guides/debugging-getting-started/#security-implicatio
 
 ## Windows 
 
-> If you don't want to build it yourself, check out the [releases](https://github.com/taviso/ctftool/releases) tab
+> If you don't want to build it yourself, check out the [releases](https://github.com/taviso/cefdebug/releases) tab
 
 I used [GNU make](http://gnuwin32.sourceforge.net/packages/make.htm) and Visual
 Studio 2019 to develop `cefdebug`. 
